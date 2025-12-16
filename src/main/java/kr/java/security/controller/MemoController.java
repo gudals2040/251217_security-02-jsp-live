@@ -76,7 +76,7 @@ public class MemoController {
         if (success) {
             return "redirect:/memo/" + id;
         } else {
-            return "redirect:/memo";  // 권한 없으면 목록으로
+            return "redirect:/memo";
         }
     }
 
