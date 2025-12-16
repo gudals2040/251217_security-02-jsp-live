@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    # https://console.aiven.io/
+    url: jdbc:mysql://mysql-145c99ea-{ }.aivencloud.com:{ }/defaultdb?ssl-mode=REQUIRED
+    username: { }
+    password: AVNS_{ }
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      # ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  security:
+    user:
+      name: user
+      password: mypassword
+
+logging:
+  level:
+    org.springframework.security.web.csrf: TRACE
+    org.springframework.security: DEBUG
