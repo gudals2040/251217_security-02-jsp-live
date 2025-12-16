@@ -63,4 +63,26 @@ public class MemoController {
         model.addAttribute("memo", memo);
         return "memo/edit";
     }
+
+    @PostMapping("/{id}/edit")
+    public String update(
+            @PathVariable Long id,
+            @RequestParam String title,
+            @RequestParam String content,
+            Principal principal) {
+
+        boolean success = memoService.updateMemo(id, title, content, principal.getName());
+
+        if (success) {
+            return "redirect:/memo/" + id;
+        } else {
+            return "redirect:/memo";  // 권한 없으면 목록으로
+        }
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, Principal principal) {
+        memoService.deleteMemo(id, principal.getName());
+        return "redirect:/memo";
+    }
 }
