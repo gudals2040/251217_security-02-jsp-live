@@ -3,6 +3,9 @@ package kr.java.security.controller;
 import kr.java.security.model.entity.Memo;
 import kr.java.security.service.MemoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,19 +29,32 @@ public class MemoController {
         return "memo/list";
     }
 
+    // #(3)-1
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Principal principal, Model model) {
+    public String detail(@PathVariable Long id,
+                         // Principal principal
+                         @AuthenticationPrincipal UserDetails userDetails,
+                         Model model) {
         Memo memo = memoService.getMemo(id);
 
-        boolean isOwner = memo.getAuthor().getUsername().equals(principal.getName());
+        boolean isOwner = memo.getAuthor().getUsername().equals(
+                userDetails.getUsername());
 
         model.addAttribute("memo", memo);
         model.addAttribute("isOwner", isOwner);
         return "memo/detail";
     }
 
+    // #(3)-2
     @GetMapping("/new")
-    public String createForm() {
+    public String createForm(Authentication authentication, Model model) {
+        boolean isAdmin =
+                // 현재 갖고 있는 권한 중 ADMIN 권한 여부
+                authentication.getAuthorities()
+                        .stream()
+                        .anyMatch(auth
+                                -> auth.getAuthority().equals("ROLE_ADMIN"));
+        model.addAttribute("isAdmin", isAdmin);
         return "memo/form";
     }
 
