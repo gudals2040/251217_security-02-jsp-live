@@ -39,13 +39,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 Object idAttribute = oAuth2User.getAttribute("id");
                 providerId = String.valueOf(idAttribute);
                 name = oAuth2User.getAttribute("login"); // 깃허브 사용자명
-                log.info("providerId: {}, name: {}", providerId, name);
                 break;
+            // #(6)-2
             case "google":
+                providerId = oAuth2User.getAttribute("sub");
+                name = oAuth2User.getAttribute("name");
+                break;
             case "kakao":
             default:
                 throw new OAuth2AuthenticationException("지원하지 않는 로그인 제공자");
         }
+        log.info("providerId: {}, name: {}", providerId, name);
 
         // 기존 사용자 조회 또는 새 사용자 생성
         UserAccount user = userAccountRepository

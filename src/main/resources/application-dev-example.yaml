@@ -33,8 +33,39 @@ spring:
             client-id: {}      # GitHub에서 발급받은 Client ID
             client-secret: {}  # GitHub에서 발급받은 Client Secret
             scope: read:user, user:email       # 요청할 권한 범위
-
-
+          # #(6)-1
+          # https://console.cloud.google.com/
+          # API 및 서비스 -> OAuth 동의 화면 -> 프로젝트 만들기 > 시작하기 > 대상 - 외부
+          # 클라이언트 > 클라이언트 만들기
+          # 승인된 리디렉션 URI : http://localhost:8080/login/oauth2/code/google
+          # 데이터 액세스 > 범위 추가 또는 삭제 > .../auth/userinfo.email, .../auth/userinfo.profile
+          # 대상 > 게시 상태 > 앱 게시 > 프로덕션 단계
+          google:
+            client-id: {}.apps.googleusercontent.com
+            client-secret: {}
+            scope: email, profile
+          # #(6)-4
+          # https://developers.kakao.com/
+          # 앱 > 앱 생성 > 카카오 로그인 > 일반 - 사용 설정
+          # 동의항목 > 개인정보 > 닉네임
+          # 앱 > 플랫폼 키 > REST API 키 (client-id)
+          # 클라이언트 시크릿 - 카카오 로그인 (client-secret)
+          # 카카오 로그인 리다이렉트 URI : http://localhost:8080/login/oauth2/code/kakao (저장)
+          kakao:
+            client-id: { }
+            client-secret: { }
+            client-authentication-method: client_secret_post  # Kakao 요구사항
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: profile_nickname
+            client-name: Kakao
+        # Kakao Provider 정보 - 수동 설정 필요
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
 logging:
   level:
     org.springframework.security.web.csrf: TRACE

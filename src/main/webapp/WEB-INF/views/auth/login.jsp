@@ -66,6 +66,10 @@
     <a href="<c:url value="/oauth2/authorization/github" />">
         <button type="button">GitHub으로 로그인</button>
     </a>
+    <%-- #(6)-3  --%>
+    <a href="<c:url value="/oauth2/authorization/google" />">
+        <button type="button">Google으로 로그인</button>
+    </a>
 </p>
 
 
