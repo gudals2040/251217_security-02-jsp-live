@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 // #(5)-4
 @Service
@@ -45,7 +46,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 providerId = oAuth2User.getAttribute("sub");
                 name = oAuth2User.getAttribute("name");
                 break;
+            // #(6)-5
             case "kakao":
+                Object idAttribute2 = oAuth2User.getAttribute("id");
+                providerId = String.valueOf(idAttribute2);
+
+                // 중첩된 구조에서 정보 추출
+                Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
+                if (kakaoAccount != null) {
+                    // profile 내부에서 nickname 추출
+                    Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+                    if (profile != null) {
+                        name = (String) profile.get("nickname");
+                    } else {
+                        name = "kakao_" + providerId;
+                    }
+                } else {
+                    name = "kakao_" + providerId;
+                }
+                break;
             default:
                 throw new OAuth2AuthenticationException("지원하지 않는 로그인 제공자");
         }

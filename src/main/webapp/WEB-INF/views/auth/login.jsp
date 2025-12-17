@@ -64,11 +64,15 @@
         Spring Security가 자동으로 이 URL을 처리합니다.
     --%>
     <a href="<c:url value="/oauth2/authorization/github" />">
-        <button type="button">GitHub으로 로그인</button>
+        <button type="button">GitHub로 로그인</button>
     </a>
     <%-- #(6)-3  --%>
     <a href="<c:url value="/oauth2/authorization/google" />">
         <button type="button">Google으로 로그인</button>
+    </a>
+    <%-- #(6)-5  --%>
+    <a href="<c:url value="/oauth2/authorization/kakao" />">
+        <button type="button">Kakao로 로그인</button>
     </a>
 </p>
 
