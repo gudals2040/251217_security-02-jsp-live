@@ -1,6 +1,8 @@
 package kr.java.security.config;
 
 import jakarta.servlet.DispatcherType;
+import kr.java.security.service.CustomOAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +24,10 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity // #(1)-1
+@RequiredArgsConstructor // #(5)-5-1
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService; // #(5)-5-2
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,6 +53,14 @@ public class SecurityConfig {
                     // #(4)-2-2
                     .failureHandler(authenticationFailureHandler())
                     .permitAll()
+            )
+            // #(5)-5-3
+            .oauth2Login(oauth2 -> oauth2
+                    .loginPage("/auth/login") // 커스텀과 같은 로그인 페이지
+                    .defaultSuccessUrl("/", true)
+                    .failureUrl("/auth/login?error=true")
+                    // 사용자 정보를 처리할 서비스를 등록
+                    .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
             )
 
             .logout(logout -> logout
