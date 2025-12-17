@@ -55,6 +55,20 @@
     <button>로그인</button>
 </form>
 
+<%-- #(5)-6 --%>
+<%-- 소셜 로그인 버튼 --%>
+<h2>소셜 로그인</h2>
+<p>
+    <%--
+        OAuth2 로그인 URL 형식: /oauth2/authorization/{provider}
+        Spring Security가 자동으로 이 URL을 처리합니다.
+    --%>
+    <a href="<c:url value="/oauth2/authorization/github" />">
+        <button type="button">GitHub으로 로그인</button>
+    </a>
+</p>
+
+
 <p>
     <a href="<c:url value="/auth/signup" />">회원가입</a>
 </p>
