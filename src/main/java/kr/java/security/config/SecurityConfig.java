@@ -3,6 +3,7 @@ package kr.java.security.config;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -11,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // #(1)-1
 public class SecurityConfig {
 
     @Bean
@@ -41,6 +43,14 @@ public class SecurityConfig {
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
                     .permitAll()
+            )
+
+            // #(1)-2
+            .exceptionHandling(ex -> ex
+                    // 인증 <- 로그인이 안된 사람
+                    .authenticationEntryPoint(((request, response, authException) -> response.sendRedirect("/auth/login")))
+                    // 인가 <- 인증은 되었는데 권한이 없는 사람 => AccessDeniedException
+                    .accessDeniedPage("/error/403") // Forward (POST) / 경로 -> jsp 파일
             )
         ;
 
