@@ -64,25 +64,29 @@ public class MemoController {
         return "memo/edit";
     }
 
+    // #(1)-5
+    private String getAuthorName(Long memoId) {
+        // 작성자 이름 받아오기
+        return memoService.getMemo(memoId).getAuthor().getUsername();
+    }
+
+    // #(1)-6
     @PostMapping("/{id}/edit")
     public String update(
             @PathVariable Long id,
             @RequestParam String title,
-            @RequestParam String content,
-            Principal principal) {
+            @RequestParam String content) {
 
-        boolean success = memoService.updateMemo(id, title, content, principal.getName());
-
-        if (success) {
-            return "redirect:/memo/" + id;
-        } else {
-            return "redirect:/memo";
-        }
+        // 작성자의 이름을 넣어줌
+        memoService.updateMemo(id, title, content, getAuthorName(id));
+        // 예외 발생 시 이 흐름을 벗어남 (Spring Security)
+        return "redirect:/memo/" + id;
     }
 
+    // #(1)-7
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id, Principal principal) {
-        memoService.deleteMemo(id, principal.getName());
+    public String delete(@PathVariable Long id) {
+        memoService.deleteMemo(id, getAuthorName(id));
         return "redirect:/memo";
     }
 }

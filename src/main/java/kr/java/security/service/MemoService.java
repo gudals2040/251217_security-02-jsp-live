@@ -5,6 +5,9 @@ import kr.java.security.model.entity.UserAccount;
 import kr.java.security.model.repository.MemoRepository;
 import kr.java.security.model.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,29 +47,25 @@ public class MemoService {
         return memoRepository.save(memo);
     }
 
+    // #(1)-8
     @Transactional
-    public boolean updateMemo(Long id, String title, String content, String username) {
+    // @Secured() <- 생략 - ROLE
+    @PreAuthorize("#username == authentication.name") // SpEL
+    // #username -> 메서드 인자로 전달 받은 값 -> 글의 유저네임
+    // authentication -> authentication.name 로그인 세션에 저장된 username
+//    @PreAuthorize("#username == principal.username")
+//    @PostAuthorize()
+    public void updateMemo(Long id, String title, String content, String username) {
         Memo memo = getMemo(id);
-
-        // 본인 글인지 확인
-        if (!memo.getAuthor().getUsername().equals(username)) {
-            return false;
-        }
-
         memo.setTitle(title);
         memo.setContent(content);
-        return true;
     }
 
+    // #(1)-9
     @Transactional
-    public boolean deleteMemo(Long id, String username) {
+    @PreAuthorize("#username == authentication.name or hasRole('ADMIN')") // 2개 이상의 조건
+    public void deleteMemo(Long id, String username) {
         Memo memo = getMemo(id);
-
-        if (!memo.getAuthor().getUsername().equals(username)) {
-            return false;
-        }
-
         memoRepository.delete(memo);
-        return true;
     }
 }
