@@ -1,5 +1,6 @@
 package kr.java.security.service;
 
+import kr.java.security.model.entity.CustomOAuth2User;
 import kr.java.security.model.entity.UserAccount;
 import kr.java.security.model.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +53,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .orElseGet(() -> createOAuth2User(provider, providerId, name));
 
         // 일반적 구조 -> DB에 username provider 구별 -> 추가적 작업
-        return new DefaultOAuth2User(
-                List.of(new SimpleGrantedAuthority(user.getRole())),
-                oAuth2User.getAttributes(),
-                "id"
+//        return new DefaultOAuth2User(
+//                List.of(new SimpleGrantedAuthority(user.getRole())),
+//                oAuth2User.getAttributes(),
+//                "id"
+//        );
+        // #(5)-8
+        return new CustomOAuth2User(
+                user.getId(), // 가입 또는 로그인한 user의 userId
+                oAuth2User, // 로그인 과정에서 얻은 소셜 계정 정보
+                user.getRole(), // 권한
+                provider
         );
     }
 
