@@ -15,6 +15,7 @@ public class ErrorController {
     // @GetMapping("/403")
     @PostMapping("/403")
     // @RequestMapping("/403")
+    // #(4)-3
     public String forbidden(
             @RequestAttribute(name = "errorMessage", required = false)
             String errorMessage,
@@ -23,6 +24,7 @@ public class ErrorController {
         if (errorMessage == null) {
             errorMessage = "이 페이지에 접근할 권한이 없습니다";
         }
+        model.addAttribute("errorMessage", errorMessage);
         return "error/403";
     }
 }
