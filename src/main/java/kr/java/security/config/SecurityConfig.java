@@ -3,6 +3,9 @@ package kr.java.security.config;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableWebSecurity
@@ -35,7 +42,11 @@ public class SecurityConfig {
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .defaultSuccessUrl("/", true)
+//                    .successHandler()
+                    // -> request.getSession().setAttribute("REDIRECT_URL", requestedUrl);
                     .failureUrl("/auth/login?error=true")
+                    // #(4)-2-2
+                    .failureHandler(authenticationFailureHandler())
                     .permitAll()
             )
 
@@ -86,6 +97,28 @@ public class SecurityConfig {
            request.setAttribute("errorMessage", "접근권한이 없습니다.");
            request.getRequestDispatcher("/error/403").forward(request, response);  // POST
         });
+    }
+
+    // #(4)-2-1
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return (request, response, exception) -> {
+            String errorMessage;
+
+            if (exception instanceof BadCredentialsException) {
+                errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
+            } else if (exception instanceof DisabledException) {
+                errorMessage = "비활성화된 계정입니다. 관리자에게 문의하세요.";
+            } else if (exception instanceof LockedException) {
+                errorMessage = "잠긴 계정입니다. 관리자에게 문의하세요.";
+            } else {
+                errorMessage = "로그인에 실패했습니다.";
+            }
+
+            // URL 인코딩하여 파라미터로 전달
+            String encodedMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
+            response.sendRedirect("/auth/login?error=true&message=" + encodedMessage);
+        };
     }
 
     @Bean
