@@ -68,7 +68,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     // #(5)-4-2
-    private UserAccount createOAuth2User(String provider, String providerId,String name
+    private UserAccount createOAuth2User(String provider, String providerId, String name
     ) {
         String username = provider + "_" + providerId;
 
