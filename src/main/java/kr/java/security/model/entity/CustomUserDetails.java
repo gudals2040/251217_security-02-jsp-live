@@ -24,4 +24,5 @@ public class CustomUserDetails implements UserDetails {
         this.enabled = user.getEnabled();
         this.authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
     }
+
 }
