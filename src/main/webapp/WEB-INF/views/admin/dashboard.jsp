@@ -19,7 +19,6 @@
     <tr>
         <th>ID</th>
         <th>아이디</th>
-        <th>이메일</th>
         <th>권한</th>
         <th>상태</th>
         <th>가입일</th>
