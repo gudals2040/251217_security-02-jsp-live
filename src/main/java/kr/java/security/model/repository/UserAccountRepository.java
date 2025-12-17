@@ -12,4 +12,8 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
 
     // 회원가입 시 중복 체크에 사용
     boolean existsByUsername(String username);
+
+    // #(5)-3
+    // OAuth2 사용자 조회
+    Optional<UserAccount> findByProviderAndProviderId(String provider, String providerId);
 }

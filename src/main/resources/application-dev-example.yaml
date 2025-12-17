@@ -20,6 +20,21 @@ spring:
       name: user
       password: mypassword
 
+    # #(5)-1
+    oauth2:
+      client:
+        registration:
+          # GitHub OAuth 설정
+          # GitHub Developer Settings에서 OAuth App 생성 후 값 입력
+          # https://github.com/settings/developers
+          # {baseUrl}/login/oauth2/code/{registrationId}
+          # Authorization callback URL : http://localhost:8080/login/oauth2/code/github
+          github:
+            client-id: {}      # GitHub에서 발급받은 Client ID
+            client-secret: {}  # GitHub에서 발급받은 Client Secret
+            scope: read:user, user:email       # 요청할 권한 범위
+
+
 logging:
   level:
     org.springframework.security.web.csrf: TRACE

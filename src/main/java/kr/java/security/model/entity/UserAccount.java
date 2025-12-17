@@ -29,4 +29,18 @@ public class UserAccount extends BaseEntity {
         this.role = role;
         this.enabled = true;
     }
+
+    // (5)-2
+    private String provider; // 소셜 로그인을 제공하는 곳
+    private String providerId; // OAuth2 제공자에서의 사용자 ID
+
+    // OAuth2 회원가입용 생성자
+    public UserAccount(String username, String role, String provider, String providerId) {
+        this.username = username;
+        this.password = ""; // 소셜로그인은 비밀번호가 없으므로 빈 것 제공.
+        this.role = role;
+        this.enabled = true;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 }
